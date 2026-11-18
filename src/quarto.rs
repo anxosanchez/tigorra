@@ -2548,6 +2548,9 @@ format: html
         let _ = std::fs::remove_file(&plot);
     }
 
+    // On Windows the interrupt is a hard taskkill, so the kernel is restarted
+    // and this Unix-specific expectation (session survives) does not hold.
+    #[cfg(unix)]
     #[test]
     fn kernel_can_be_interrupted_without_restarting() {
         let mut kernel = PythonKernel::new();
