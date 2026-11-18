@@ -130,8 +130,9 @@ cargo test          # 51 tests
 cargo build --release
 ```
 
-Las *Actions* del repositorio ejecutan `cargo test` y `cargo build --release` en macOS, Linux y
-Windows en cada push, y publican binarios al crear una etiqueta `v*`.
+CI y releases automatizados (macOS, Linux y Windows) están preparados en `.github/workflows/`; se
+activarán al publicar el proyecto con permiso para modificar flujos de trabajo. Mientras tanto,
+compila desde el código fuente o descarga lo que haya en Releases.
 
 Capturas automáticas (útil en CI):
 
