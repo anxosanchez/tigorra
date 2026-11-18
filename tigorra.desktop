@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Tigorra
+Comment=Editor de Markdown nativo con soporte KaTeX y corrector Hunspell
+Exec=tigorra
+Terminal=false
+Type=Application
+Categories=Office;WordProcessor;TextEditor;Development;
+StartupNotify=true

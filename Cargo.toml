@@ -1,0 +1,11 @@
+[package]
+name = "tigorra"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+eframe = "0.30"
+egui = "0.30"
+image = { version = "0.25", default-features = false, features = ["png"] }
+latex-rust = { version = "3.0.3", features = ["egui", "png"] }
+spellbook = "0.4.2"

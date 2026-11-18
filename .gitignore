@@ -1,0 +1,15 @@
+# Rust build output
+/target
+# Generated exports and captures
+/exports
+/dist-linux
+/dist-windows
+# Local reverse-engineering notes (kept out of the public repo)
+/MECHANICS.md
+/mechanics.json
+# OS noise
+.DS_Store
+*.log
+
+# Legacy development screenshots (kept locally)
+/shots/legacy/

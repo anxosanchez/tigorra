@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tigorra — editor de Markdown y Quarto</title>
+<meta name="description" content="Editor nativo de Markdown y Quarto con vista previa, KaTeX, Hunspell y celdas Python. Rust + egui, para macOS, Linux y Windows.">
+<meta property="og:title" content="Tigorra — editor de Markdown y Quarto">
+<meta property="og:description" content="Editor nativo de Markdown y Quarto con vista previa, KaTeX, Hunspell y celdas Python.">
+<meta property="og:image" content="https://raw.githubusercontent.com/anxosanchez/tigorra/main/shots/improved_split.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📝</text></svg>">
+<style>
+  :root {
+    --bg: #16161e;
+    --bg-soft: #1b1b26;
+    --card: #1f2030;
+    --border: #2c2e45;
+    --text: #c8cbe0;
+    --title: #e8eaf6;
+    --muted: #8b90ad;
+    --accent: #7aa2f7;
+    --accent-2: #9ece6a;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: radial-gradient(1200px 600px at 80% -10%, #23305a 0%, transparent 60%), var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 22px; }
+  header { padding: 34px 0 12px; }
+  .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; color: var(--title); font-size: 1.05rem; letter-spacing: .02em; }
+  .logo { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--accent), #bb9af7); display: grid; place-items: center; color: #12121a; font-weight: 900; }
+  .nav-links { display: flex; gap: 18px; font-size: .93rem; }
+  .hero { display: grid; grid-template-columns: 1.05fr .95fr; gap: 38px; align-items: center; padding: 54px 0 40px; }
+  .eyebrow { color: var(--accent-2); font-family: var(--mono); font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; }
+  h1 { color: var(--title); font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 1.12; margin: 10px 0 14px; letter-spacing: -.02em; }
+  h1 .grad { background: linear-gradient(90deg, var(--accent), #bb9af7 70%, var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lede { font-size: 1.07rem; max-width: 46ch; color: var(--text); }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 10px; font-weight: 700; font-size: .95rem; border: 1px solid var(--border); color: var(--title); background: var(--card); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #101322; }
+  .btn:hover { text-decoration: none; transform: translateY(-1px); }
+  .shot { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.45); background: var(--bg-soft); }
+  .shot img { display: block; width: 100%; height: auto; }
+  section { padding: 38px 0; }
+  h2 { color: var(--title); font-size: 1.55rem; margin: 0 0 6px; letter-spacing: -.01em; }
+  .sub { color: var(--muted); margin: 0 0 22px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+  .card h3 { margin: 0 0 6px; color: var(--title); font-size: 1rem; }
+  .card p { margin: 0; font-size: .92rem; color: var(--muted); }
+  .downloads { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .dl { display: block; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; color: var(--title); }
+  .dl:hover { border-color: var(--accent); text-decoration: none; }
+  .dl span { display: block; color: var(--muted); font-size: .82rem; margin-top: 2px; }
+  .dl b { font-size: .98rem; }
+  pre { background: #101019; border: 1px solid var(--border); border-radius: 10px; padding: 16px; overflow-x: auto; font-family: var(--mono); font-size: .87rem; color: #d7daf0; }
+  code { font-family: var(--mono); }
+  .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .gallery figure { margin: 0; }
+  .gallery img { width: 100%; border-radius: 12px; border: 1px solid var(--border); display: block; }
+  .gallery figcaption { color: var(--muted); font-size: .82rem; padding-top: 6px; }
+  .note { border-left: 3px solid var(--accent); background: rgba(122,162,247,.08); border-radius: 0 10px 10px 0; padding: 14px 18px; }
+  footer { border-top: 1px solid var(--border); margin-top: 30px; padding: 26px 0 40px; color: var(--muted); font-size: .88rem; display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; }
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding-top: 30px; }
+    .grid { grid-template-columns: 1fr 1fr; }
+    .downloads { grid-template-columns: 1fr 1fr; }
+    .gallery { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 560px) {
+    .grid, .downloads { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header class="wrap">
+  <div class="nav">
+    <div class="brand"><span class="logo">T</span> tigorra</div>
+    <nav class="nav-links">
+      <a href="#features">Funciones</a>
+      <a href="#download">Descargar</a>
+      <a href="#screens">Capturas</a>
+      <a href="https://github.com/anxosanchez/tigorra">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Rust + egui · macOS / Linux / Windows</div>
+      <h1>Escribe Markdown y Quarto.<br><span class="grad">Sin distracciones.</span></h1>
+      <p class="lede">Tigorra es un editor de escritorio nativo con vista previa instantánea, KaTeX y
+        mhchem, corrector Hunspell, callouts de Quarto y ejecución de celdas Python con Matplotlib.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/anxosanchez/tigorra/releases/latest">Descargar</a>
+        <a class="btn" href="https://github.com/anxosanchez/tigorra">Ver el código</a>
+        <a class="btn" href="#screens">Capturas</a>
+      </div>
+    </div>
+    <div class="shot">
+      <img src="https://raw.githubusercontent.com/anxosanchez/tigorra/main/shots/improved_split.png"
+           alt="Tigorra en vista combinada con editor y vista previa" loading="eager">
+    </div>
+  </section>
+
+  <section id="features">
+    <h2>Todo lo que necesitas en un editor técnico</h2>
+    <p class="sub">Sin Electron, sin navegador incrustado: un binario nativo con todo empaquetado.</p>
+    <div class="grid">
+      <div class="card"><h3>Markdown real</h3><p>Archivos en disco, pestañas, recientes, carpeta de trabajo y Abrir rápido con ⌘P.</p></div>
+      <div class="card"><h3>Vista previa fiel</h3><p>Párrafos ajustados, tablas alineadas, listas anidadas, tareas interactivas, imágenes y enlaces.</p></div>
+      <div class="card"><h3>Quarto</h3><p>Frontmatter YAML, callouts, chunks <code>{python}</code> y exportación con el CLI a HTML, PDF y DOCX.</p></div>
+      <div class="card"><h3>KaTeX y mhchem</h3><p>Fórmulas en línea y en bloque con tipografía STIX Two, incluidas reacciones químicas.</p></div>
+      <div class="card"><h3>Ortografía</h3><p>Hunspell es-ES, gl-ES y en-US, detección de idioma por documento y correcciones prudentes.</p></div>
+      <div class="card"><h3>Python</h3><p>Kernel persistente en segundo plano, salida en vivo, figuras inline e interrupción sin perder estado.</p></div>
+      <div class="card"><h3>Deshacer completo</h3><p>⌘Z cubre lo que escribes y también negritas, reemplazos y correcciones.</p></div>
+      <div class="card"><h3>7 paletas</h3><p>Tokyo Night, Solarized, VS Code Dark+, Catppuccin, Gruvbox y más, con 5 hojas de estilo.</p></div>
+      <div class="card"><h3>Nativo y portable</h3><p>Binarios para macOS arm64/Intel, Linux x86_64 y Windows, publicados en cada release.</p></div>
+    </div>
+  </section>
+
+  <section id="download">
+    <h2>Descargar</h2>
+    <p class="sub">Los binarios se generan con GitHub Actions al publicar una etiqueta <code>v*</code>.</p>
+    <div class="downloads">
+      <a class="dl" href="https://github.com/anxosanchez/tigorra/releases/latest/download/tigorra-macos-arm64.tar.gz"><b>macOS arm64</b><span>Apple Silicon</span></a>
+      <a class="dl" href="https://github.com/anxosanchez/tigorra/releases/latest/download/tigorra-macos-x86_64.tar.gz"><b>macOS Intel</b><span>x86_64</span></a>
+      <a class="dl" href="https://github.com/anxosanchez/tigorra/releases/latest/download/tigorra-linux-x86_64.tar.gz"><b>Linux</b><span>x86_64</span></a>
+      <a class="dl" href="https://github.com/anxosanchez/tigorra/releases/latest/download/tigorra-windows-x86_64.zip"><b>Windows</b><span>x86_64</span></a>
+    </div>
+    <p class="sub" style="margin-top:14px">Descomprime y ejecuta <code>tigorra</code> (o <code>Tigorra.exe</code> en Windows).
+      En macOS, si Gatekeeper lo bloquea: clic derecho → Abrir.</p>
+
+    <h2 style="margin-top:28px">Desde el código</h2>
+    <pre><code>git clone https://github.com/anxosanchez/tigorra.git
+cd tigorra
+cargo run --release
+cargo run --release -- notas.md</code></pre>
+  </section>
+
+  <section id="screens">
+    <h2>Capturas</h2>
+    <div class="gallery">
+      <figure>
+        <img src="https://raw.githubusercontent.com/anxosanchez/tigorra/main/shots/improved_python.png" alt="Celda de Python con figura de Matplotlib" loading="lazy">
+        <figcaption>Kernel de Python persistente con salida y figura inline.</figcaption>
+      </figure>
+      <figure>
+        <img src="https://raw.githubusercontent.com/anxosanchez/tigorra/main/shots/improved_quickopen.png" alt="Abrir rápido con lista de archivos" loading="lazy">
+        <figcaption>Abrir rápido (⌘P) en la carpeta de trabajo.</figcaption>
+      </figure>
+      <figure>
+        <img src="https://raw.githubusercontent.com/anxosanchez/tigorra/main/shots/improved_tables.png" alt="Tablas, tareas y listas anidadas" loading="lazy">
+        <figcaption>Tablas alineadas, tareas interactivas y listas anidadas.</figcaption>
+      </figure>
+      <figure>
+        <img src="https://raw.githubusercontent.com/anxosanchez/tigorra/main/shots/improved_quarto_panel.png" alt="Panel de Quarto con exportación CLI" loading="lazy">
+        <figcaption>Panel Quarto con exportación vía CLI a HTML, PDF y DOCX.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="note">
+      <strong>¿Versión web?</strong> Todavía no. Tigorra es una app nativa: lee y escribe archivos,
+      lanza procesos de Python y usa el CLI de Quarto. Una demo en el navegador necesitaría un port a
+      WebAssembly con esas funciones sustituidas por APIs del navegador (subir/descargar archivos) y
+      sin ejecución de código. Es un proyecto aparte; esta página y los Releases son la vía de uso
+      “online” por ahora.
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <span>© <span id="year">2026</span> anxosanchez · Tigorra</span>
+  <span>Inspirado en Typora. No afiliado a Typora ni a Positron.</span>
+  <span><a href="https://github.com/anxosanchez/tigorra">GitHub</a> · <a href="https://github.com/anxosanchez/tigorra/blob/main/README.md">README</a> · <a href="https://github.com/anxosanchez/tigorra/blob/main/ANALYSIS.md">Análisis</a></span>
+</footer>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
