@@ -1,5 +1,6 @@
 # Tigorra — editor de Markdown y Quarto
 
+[![CI](https://github.com/anxosanchez/tigorra/actions/workflows/ci.yml/badge.svg)](https://github.com/anxosanchez/tigorra/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/anxosanchez/tigorra?label=descarga)](https://github.com/anxosanchez/tigorra/releases/latest)
 [![Página del proyecto](https://img.shields.io/badge/p%C3%A1gina-GitHub%20Pages-2ea44f)](https://anxosanchez.github.io/tigorra/)
 
@@ -11,9 +12,17 @@ Proyecto personal inspirado en Typora; no está afiliado a Typora ni a Positron.
 
 ## Descargar y ejecutar
 
-Los binarios para macOS (arm64/x86_64), Linux (x86_64) y Windows (x86_64) se publican en
-**[Releases](https://github.com/anxosanchez/tigorra/releases/latest)** → descarga el archivo de tu
-sistema, descomprímelo y ejecuta `tigorra` (o `Tigorra.exe`).
+Binarios publicados en **[Releases](https://github.com/anxosanchez/tigorra/releases/latest)**:
+
+| Plataforma | Descarga |
+|---|---|
+| macOS Apple Silicon | [tigorra-macos-arm64.tar.gz](https://github.com/anxosanchez/tigorra/releases/latest/download/tigorra-macos-arm64.tar.gz) |
+| macOS Intel | [tigorra-macos-x86_64.tar.gz](https://github.com/anxosanchez/tigorra/releases/latest/download/tigorra-macos-x86_64.tar.gz) |
+| Linux x86_64 | [tigorra-linux-x86_64.tar.gz](https://github.com/anxosanchez/tigorra/releases/latest/download/tigorra-linux-x86_64.tar.gz) |
+| Windows x86_64 | [tigorra-windows-x86_64.zip](https://github.com/anxosanchez/tigorra/releases/latest/download/tigorra-windows-x86_64.zip) |
+
+Descomprime el archivo y ejecuta `tigorra` (o `Tigorra.exe` en Windows). En macOS, si Gatekeeper lo
+bloquea: clic derecho → Abrir.
 
 Desde el código fuente:
 
@@ -130,9 +139,9 @@ cargo test          # 51 tests
 cargo build --release
 ```
 
-CI y releases automatizados (macOS, Linux y Windows) están preparados en `.github/workflows/`; se
-activarán al publicar el proyecto con permiso para modificar flujos de trabajo. Mientras tanto,
-compila desde el código fuente o descarga lo que haya en Releases.
+CI y releases se ejecutan en GitHub Actions: `cargo test --all-targets` en macOS, Linux y Windows en
+cada push, y binarios para las cuatro plataformas al crear una etiqueta `v*`. La página del proyecto
+se despliega en GitHub Pages desde `docs/`.
 
 Capturas automáticas (útil en CI):
 
